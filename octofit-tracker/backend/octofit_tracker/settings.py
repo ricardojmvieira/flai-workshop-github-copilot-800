@@ -26,14 +26,18 @@ SECRET_KEY = 'django-insecure-ks*!+t^h9zet)^8dm4vk408mqfx)31dgcdgy!=b1&$v3#7ed3e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 if os.environ.get('CODESPACE_NAME'):
-    ALLOWED_HOSTS.append(f"{os.environ.get('CODESPACE_NAME')}-8000.app.github.dev")
+    codespace_name = os.environ.get('CODESPACE_NAME')
+    ALLOWED_HOSTS.append(f"{codespace_name}-8000.app.github.dev")
+    ALLOWED_HOSTS.append(f"{codespace_name}-3000.app.github.dev")
 
 # CSRF Configuration for Codespaces
-CSRF_TRUSTED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000']
 if os.environ.get('CODESPACE_NAME'):
-    CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ.get('CODESPACE_NAME')}-8000.app.github.dev")
+    codespace_name = os.environ.get('CODESPACE_NAME')
+    CSRF_TRUSTED_ORIGINS.append(f"https://{codespace_name}-8000.app.github.dev")
+    CSRF_TRUSTED_ORIGINS.append(f"https://{codespace_name}-3000.app.github.dev")
 
 # Application definition
 
@@ -140,6 +144,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS Configuration
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -159,3 +164,12 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+
+# REST Framework Configuration
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+}
+
